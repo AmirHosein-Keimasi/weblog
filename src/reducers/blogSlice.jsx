@@ -3,22 +3,46 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 const initialState = [
   {
     id: nanoid(),
-    date: new Date().toISOString(),
     title: "اولین پست",
-    content: "محتوای اولین پست",
+    content: "محتوای اولین پست ما ☺️",
   },
   {
     id: nanoid(),
-    date: new Date().toISOString(),
     title: "دومین پست",
-    content: "محتوای دومین پست",
+    content: "دومین پست ما میباشد سلام دنیا 🤗",
   },
 ];
 
-const BlogsSlice = createSlice({
-  name: "blog",
+const blogsSlice = createSlice({
+  name: "blogs",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    blogAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(title, content) {
+        //Complex logic
+        return {
+          payload: {
+            id: nanoid(),
+            title,
+            content,
+          },
+        };
+      },
+    },
+    blogUpdated:(state,action)=>{
+        const {id,title,content}=action.payload;
+        const existingBlog=state.find((blog)=>blog.id===id)
+        if(existingBlog){
+            existingBlog.title=title;
+            existingBlog.content=content;
+      }
+    }
+  },
 });
 
-export default BlogsSlice.reducer;
+export const { blogUpdated ,blogAdded} = blogsSlice.actions;
+
+export default blogsSlice.reducer;
