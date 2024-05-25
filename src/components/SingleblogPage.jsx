@@ -1,32 +1,50 @@
-import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { blogDeleted, selectBlogById } from "../reducers/blogSlice";
 
 const SingleBlogPage = () => {
-  const { blogId } = useParams();
+    const { blogId } = useParams();
 
-  const blog = useSelector((state) =>
-    state.blogs.find((blog) => blog.id === blogId)
-  );
+    const blog = useSelector((state) => selectBlogById(state, blogId));
 
-  if (!blog) {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    if (!blog) {
+        return (
+            <section>
+                <h2>پستی که دنبالش میگردی وجود نداره دوست من 🤗</h2>
+            </section>
+        );
+    }
+
+    const handleDelete = () => {
+        if (blog) {
+            dispatch(blogDeleted({ id: blog.id }));
+            navigate("/");
+        }
+    };
+
     return (
-      <section>
-        <h2>پستی که دنبالش میگردی وجود نداره دوست من 🤗</h2>
-      </section>
-    );
-  }
+        <section>
+            <article className="blog">
+                <h2>{blog.title}</h2>
 
-  return (
-    <section>
-      <article className="blog">
-        <h2>{blog.title}</h2>
-        <p className="blog-content">{blog.content}</p>
-        <Link to={`/editblogs/${blog.id}`} className="button muted-button">
-          ویرایش کردن پست
-        </Link>
-      </article>
-    </section>
-  );
+                <p className="blog-content">{blog.content}</p>
+
+                <Link to={`/editBlog/${blog.id}`} className="button">
+                    ویرایش پست
+                </Link>
+                <button
+                    className="muted-button"
+                    style={{ marginRight: "10px" }}
+                    onClick={handleDelete}
+                >
+                    حذف پست
+                </button>
+            </article>
+        </section>
+    );
 };
 
 export default SingleBlogPage;

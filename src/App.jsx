@@ -1,10 +1,9 @@
-import { useState } from "react";
-import BlogList from "./components/BlogList";
+import BlogsList from "./components/BlogList";
 
 function App() {
   return (
     <>
-      <BlogList />
+      <BlogsList />
     </>
   );
 }
