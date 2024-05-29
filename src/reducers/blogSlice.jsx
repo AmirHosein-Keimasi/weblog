@@ -4,11 +4,15 @@ const initialState = {
   blogs: [
     {
       id: nanoid(),
+      date: new Date().toISOString(),
+
       title: "اولین پست",
       content: "محتوای اولین پست ما ☺️",
     },
     {
       id: nanoid(),
+      date: new Date().toISOString(),
+
       title: "دومین پست",
       content: "دومین پست ما میباشد سلام دنیا 🤗",
     },
@@ -45,7 +49,7 @@ const blogsSlice = createSlice({
     blogDeleted: (state, action) => {
       const { id } = action.payload;
       state.blogs = state.blogs.filter((blog) => blog.id !== id);
-  },
+    },
   },
 });
 export const selectAllBlogs = (state) => state.blogs.blogs;
