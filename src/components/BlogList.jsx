@@ -8,19 +8,22 @@ const BlogsList = () => {
 
   const navigate = useNavigate();
 
-  const renderedBlogs = blogs.map((blog) => (
+  const orderBlogs = blogs.slice().sort((a, b) => b.date.localeCompare(a.date));
+  
+  const renderedBlogs = orderBlogs.map((blog) => (
     <article key={blog.id} className="blog-excerpt">
       <h3>{blog.title}</h3>
       <div style={{ marginTop: 10 }}>
         <ShowTime timestamp={blog.date} />
       </div>
       <p className="blog-content">{blog.content.substring(0, 100)}</p>
-
+  
       <Link to={`/blogs/${blog.id}`} className="button muted-button">
         دیدن کامل پست
       </Link>
     </article>
   ));
+  
 
   return (
     <section className="blog-list">
