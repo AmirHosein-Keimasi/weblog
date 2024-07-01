@@ -1,5 +1,5 @@
 import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
-import { createBlog, getAllBlogs } from "../services/BlogServises";
+import { createBlog, deleteBlog, getAllBlogs, updateBlog } from "../services/BlogServises";
 
 const initialState = {
   blogs: [],
@@ -11,7 +11,28 @@ export const fetchBlogs = createAsyncThunk("/blogs/fetchBlogs", async () => {
   const response = await getAllBlogs();
   return response.data;
 });
+export const addNewBlogs = createAsyncThunk(
+  "/blogs/addNewBlogs",
+  async (initialBlog) => {
+    const response = await createBlog(initialBlog);
+    return response.data;
+  }
+);
 
+export const deleteApiBlog = createAsyncThunk(
+  "/blogs/deleteApiBlog",
+  async (initialBlogId) => {
+    await deleteBlog(initialBlogId);
+    return initialBlogId;
+  }
+);
+export const updateApiBlog = createAsyncThunk(
+  "/blogs/updateApiBlog",
+  async (initialBlog) => {
+    const response = await updateBlog(initialBlog, initialBlog.id);
+    return response.data;
+  }
+);
 const blogsSlice = createSlice({
   name: "blogs",
   initialState: initialState,
@@ -74,6 +95,17 @@ const blogsSlice = createSlice({
       .addCase(fetchBlogs.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(addNewBlogs.fulfilled, (state, action) => {
+        state.blogs.push(action.payload);
+      })
+      .addCase(deleteApiBlog.fulfilled, (state, action) => {
+        state.blogs = state.blogs.filter((blog) => blog.id !== action.payload);
+      })
+      .addCase(updateApiBlog.fulfilled, (state, action) => {
+        const { id } = action.payload;
+        const UpdateBlogIndex = state.blogs.findIndex((blog) => blog.id === id);
+        state.blogs[UpdateBlogIndex] = action.payload;
       });
   },
 });
