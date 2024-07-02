@@ -12,6 +12,9 @@ const Navbar = () => {
         <Link to={"/"} className="button">
           وبلاگ
         </Link>
+        <Link to={"/users"} className="button " style={{marginRight:5}}>
+          نویسندگان
+        </Link>
       </section>
     </nav>
   );

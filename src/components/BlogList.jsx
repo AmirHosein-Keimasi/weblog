@@ -6,6 +6,8 @@ import ShowAuthor from "./ShowAuthor";
 import ReactionButtons from "./ReactionBtns";
 import { useEffect } from "react";
 import Spinner from "./Spinner";
+
+
 const Blogs = ({ blogs }) => {
   const orderBlogs = blogs.slice().sort((a, b) => b.date.localeCompare(a.date));
   return (

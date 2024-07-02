@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout";
 import SingleBlogPage from "../components/SingleBlogPage";
 import CreateBlogForm from "../components/CreateBlogForm";
 import EditBlogForm from "../components/EditBlogForm";
+import Users from "../components/Users";
 
 export const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
             {
                 path: "/",
                 element: <App />,
+            },
+            {
+                path: "/users",
+                element: <Users />,
             },
             {
                 path: "/blogs/create-blog",
