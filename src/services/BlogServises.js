@@ -37,6 +37,13 @@ export const createBlog = (blog) => {
     return axios.post(url, blog);
 };
 
+// @desc  Create New user
+// @route POST http://localhost:9000/user
+export const createUser = (user) => {
+    const url = `${SERVER_URL}/users`;
+    return axios.post(url, user);
+};
+
 // @desc  Update Blog
 // @route PUT http://localhost:9000/blogs/:blogId
 export const updateBlog = (blog, blogId) => {
@@ -48,5 +55,12 @@ export const updateBlog = (blog, blogId) => {
 // @route DELETE http://localhost:9000/blogs/:blogId
 export const deleteBlog = (blogId) => {
     const url = `${SERVER_URL}/blogs/${blogId}`;
+    return axios.delete(url);
+};
+
+// @desc  Delete user
+// @route DELETE http://localhost:9000/users/:userId
+export const deleteApiUser = (userId) => {
+    const url = `${SERVER_URL}/users/${userId}`;
     return axios.delete(url);
 };
