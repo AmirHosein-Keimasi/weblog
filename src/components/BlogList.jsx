@@ -4,31 +4,29 @@ import { fetchBlogs, selectAllBlogs } from "../reducers/blogSlice";
 import ShowTime from "./ShowTime";
 import ShowAuthor from "./ShowAuthor";
 import ReactionButtons from "./ReactionBtns";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import Spinner from "./Spinner";
 
-
-const Blogs = ({ blogs }) => {
-  const orderBlogs = blogs.slice().sort((a, b) => b.date.localeCompare(a.date));
+let Blog = ({ blog }) => {
   return (
     <>
-      {orderBlogs.map((blog) => (
-        <article key={blog.id} className="blog-excerpt">
-          <h3>{blog.title}</h3>
-          <div style={{ marginTop: 10 }}>
-            <ShowTime timestamp={blog.date} />
-            <ShowAuthor userId={blog.user} />
-          </div>
-          <p className="blog-content">{blog.content.substring(0, 100)}</p>
-          <ReactionButtons blog={blog} />
-          <Link to={`/blogs/${blog.id}`} className="button muted-button">
-            دیدن کامل پست
-          </Link>
-        </article>
-      ))}
+      <article className="blog-excerpt">
+        <h3>{blog.title}</h3>
+        <div style={{ marginTop: 10 }}>
+          <ShowTime timestamp={blog.date} />
+          <ShowAuthor userId={blog.user} />
+        </div>
+        <p className="blog-content">{blog.content.substring(0, 100)}</p>
+        <ReactionButtons blog={blog} />
+        <Link to={`/blogs/${blog.id}`} className="button muted-button">
+          دیدن کامل پست
+        </Link>
+      </article>
     </>
   );
 };
+Blog = memo(Blog);
+
 const BlogsList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,7 +45,10 @@ const BlogsList = () => {
   if (blogStatus === "loading") {
     content = <Spinner text="در حال بارگذاری" />;
   } else if (blogStatus === "completed") {
-    content = <Blogs blogs={blogs} />;
+    const orderBlogs = blogs
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date));
+    content = orderBlogs.map((blog) => <Blog key={blog.id} blog={blog} />);
   } else if (blogStatus === "failed") {
     content = <div className="">{error.message}</div>;
   }
