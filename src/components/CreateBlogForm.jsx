@@ -1,21 +1,18 @@
-import { useId, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { addNewBlogs, blogAdded } from "../reducers/blogSlice";
 import { selectAllUser } from "../reducers/userSlice";
 import { nanoid } from "@reduxjs/toolkit";
+import { useAddNewBlogMutation } from "../api/apiSlice";
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
-  const [requestStatus, setRequestStatus] = useState("idle");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [addNewBlog, { isLoading }] = useAddNewBlogMutation();
 
-  const canSave =
-    [title, content, userId].every(Boolean) && requestStatus === "idle";
+  const canSave = [title, content, userId].every(Boolean) && !isLoading;
 
   const users = useSelector(selectAllUser);
   const onTitleChange = (e) => setTitle(e.target.value);
@@ -25,33 +22,26 @@ const CreateBlogForm = () => {
   const handleSubmitForm = async () => {
     if (canSave) {
       try {
-        setRequestStatus("pending");
-        await dispatch(
-          addNewBlogs({
-            id: nanoid(),
-            date: new Date().toISOString(),
-            title,
-            content,
-            user: userId,
-            reactions: {
-              thumbsUp: 0,
-              hooray: 0,
-              heart: 0,
-              rocket: 0,
-              eyes: 0,
-            },
-          })
-        );
-        setContent("");
-        setTitle(""), setUserId(""), navigate("/");
+        await addNewBlog({
+          id: nanoid(),
+          date: new Date().toISOString(),
+          title,
+          content,
+          user: userId,
+          reactions: {
+            thumbsUp: 0,
+            hooray: 0,
+            heart: 0,
+            rocket: 0,
+            eyes: 0,
+          },
+        }).unwrap();
+        setContent(""), setTitle(""), setUserId(""), navigate("/");
       } catch (error) {
         console.error("Failed to save the New Blog ", error);
-      } finally {
-        setRequestStatus("idle");
       }
     }
   };
-
   return (
     <section>
       <h2>ساخت پست جدید</h2>

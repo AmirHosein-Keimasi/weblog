@@ -1,39 +1,27 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  blogDeleted,
-  deleteApiBlog,
-  selectBlogById,
-} from "../reducers/blogSlice";
 import ShowTime from "./ShowTime";
 import ShowAuthor from "./ShowAuthor";
 import ReactionButtons from "./ReactionBtns";
+import { useGetBlogQuery } from "../api/apiSlice";
+import Spinner from "./Spinner";
 
 const SingleBlogPage = () => {
   const { blogId } = useParams();
-
-  const blog = useSelector((state) => selectBlogById(state, blogId));
-
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  if (!blog) {
-    return (
-      <section>
-        <h2>پستی که دنبالش میگردی وجود نداره دوست من 🤗</h2>
-      </section>
-    );
-  }
+  const { data: blog = [], isSuccess, isFetching } = useGetBlogQuery(blogId);
 
-  const handleDelete = () => {
-    if (blog) {
-      dispatch(deleteApiBlog(blog.id));
-      navigate("/");
-    }
-  };
+  // const handleDelete = () => {
+  //   if (blog) {
+  //     navigate("/");
+  //   }
+  // };
 
-  return (
-    <section>
+  let content;
+  if (isFetching) {
+    content = <Spinner text="در حال بارگذاری" />;
+  } else if (isSuccess) {
+    content = (
       <article className="blog">
         <h2>{blog.title}</h2>
         <div className="">
@@ -48,13 +36,14 @@ const SingleBlogPage = () => {
         <button
           className="muted-button"
           style={{ marginRight: "10px" }}
-          onClick={handleDelete}
+          // onClick={handleDelete}
         >
           حذف پست
         </button>
       </article>
-    </section>
-  );
+    );
+  }
+  return <section>{content}</section>;
 };
 
 export default SingleBlogPage;
