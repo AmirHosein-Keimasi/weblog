@@ -42,7 +42,7 @@ const EditBlogForm = () => {
       navigate(`/blogs/${blog.id}`);
     }
   };
-
+// kir to seyed
   return (
     <section>
       <h2>ویرایش پست </h2>
